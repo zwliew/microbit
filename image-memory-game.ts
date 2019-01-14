@@ -3,9 +3,13 @@ let pattern: number[] = []
 let listening = false
 listening = false
 game.setScore(1)
+// Loop the game for 3 rounds
 while (game.score() <= 3) {
+    // Display the current round
     basic.showString("R" + game.score())
     basic.pause(500)
+
+    // Generate a random pattern and display the image pattern
     pattern = [Math.randomRange(1, 5), Math.randomRange(1, 5), Math.randomRange(1, 5), Math.randomRange(1, 5), Math.randomRange(1, 5)]
     for (let value of pattern) {
         if (value == 1) {
@@ -30,6 +34,8 @@ while (game.score() <= 3) {
     basic.pause(200)
     basic.clearScreen()
     basic.showString("Go!")
+
+    // Listen for the user's inputs
     listening = true
     progress = 0
     while (listening) {
@@ -78,6 +84,8 @@ while (game.score() <= 3) {
                 game.gameOver()
             }
         }
+
+        // Has the user gotten the entire sequence correct?
         if (progress >= 5) {
             listening = false
             game.addScore(1)
@@ -85,6 +93,8 @@ while (game.score() <= 3) {
         basic.pause(50)
     }
 }
+
+// The user has beaten the game. Display the victory screen!
 basic.showLeds(`
     # # # # #
     # # # # #

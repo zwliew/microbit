@@ -4,6 +4,7 @@ const params = {
 }
 
 const actions = {
+    // Initialize the current game state
     initialize: function (): State {
         return {
             puckPos: new Vector({
@@ -23,6 +24,7 @@ const actions = {
             moved: false
         }
     },
+    // Move the platform left
     moveLeft: function (state: State): State {
         if (state.moved) {
             return state
@@ -39,6 +41,7 @@ const actions = {
             moved: true
         }
     },
+    // Move the platform right
     moveRight: function (state: State): State {
         if (state.moved) {
             return state
@@ -55,6 +58,7 @@ const actions = {
             moved: true
         }
     },
+    // Advances the game state by 1 step
     tick: function (state: State): State {
         if (!state.running) {
             return state
@@ -67,17 +71,22 @@ const actions = {
         let running = state.running
         let moved = state.moved
 
+        // Update the position of the platform
         platformPos = state.platformPos.add(state.platformVel)
         if (platformPos.x > 3 || platformPos.x < 1) {
+            // Prevent the platform from exceeding the boundaries of the screen
             platformPos = state.platformPos
         }
 
+        // Reset the velocity of the platform
         platformVel = new Vector({
             x: 0,
             y: 0
         })
 
+        // Update the position of the puck
         puckPos = puckPos.add(puckVel)
+        // Prevent the puck from exceeding the horizontal boundaries of the screen
         if (puckPos.x < 0) {
             puckPos = puckPos.add(new Vector({
                 x: 2,
@@ -98,6 +107,7 @@ const actions = {
             })
         }
 
+        // Prevent the puck from exceeding the vertical boundaries of the screen
         if (puckPos.y < 0) {
             puckPos = puckPos.add(new Vector({
                 x: 0,
@@ -120,6 +130,7 @@ const actions = {
                 })
             }
         } else if (puckPos.y > platformPos.y) {
+            // The player failed to catch the puck. Game over!
             running = false
         }
 
@@ -138,36 +149,45 @@ const actions = {
 let s: State = actions.initialize()
 
 basic.forever(function () {
+    // Advance the game state
     s = actions.tick(s)
 
+    // Is the game over?
     if (!s.running) {
         basic.showIcon(IconNames.Sad)
         return
     }
 
+    // Clear the screen
     for (let x = 0; x < 5; x++) {
         for (let y = 0; y < 5; y++) {
             led.unplot(x, y)
         }
     }
 
+    // Draw the platform on the screen
     led.plot(s.platformPos.x, s.platformPos.y)
     led.plot(s.platformPos.x - 1, s.platformPos.y)
     led.plot(s.platformPos.x + 1, s.platformPos.y)
 
+    // Draw the puck on the screen
     led.plot(s.puckPos.x, s.puckPos.y)
 
+    // Delay the game loop to meet the desired frame rate
     basic.pause(Math.floor(1000 / params.fps))
 })
 
+// Handle left button presses
 input.onButtonPressed(Button.A, function () {
     s = actions.moveLeft(s)
 })
 
+// Handle right button presses
 input.onButtonPressed(Button.B, function () {
     s = actions.moveRight(s)
 })
 
+// Interface definitions for various classes used in the game
 interface State {
     puckPos: Vector
     platformPos: Vector

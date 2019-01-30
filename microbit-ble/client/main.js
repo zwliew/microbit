@@ -9,7 +9,7 @@ window.addEventListener("load", () => {
   const BIT3 = 1 << 1;
   const BIT4 = 1;
 
-  const DISPLAY_MODES = ["icon", "temperature"];
+  const DISPLAY_MODES = ["scroll", "icon", "temperature"];
   const ICON_MATRIX_CMDS = {
     "clear-day": [
       BIT2,
@@ -151,6 +151,7 @@ window.addEventListener("load", () => {
         uvIndex,
         windSpeed,
         visibility,
+        summary,
         icon
       } = curState.weather;
       temperatureText.textContent = `Temperature: ${temperature}°C`;
@@ -166,7 +167,7 @@ window.addEventListener("load", () => {
       let matrix;
       switch (curState.displayMode) {
         // Temperature
-        case 1:
+        case 2:
           const nums = Math.round(temperature)
             .toString()
             .split("")
@@ -177,10 +178,18 @@ window.addEventListener("load", () => {
           sendMatrix(matrix);
           break;
         // Weather icon
-        case 0:
-        default:
+        case 1:
           matrix = ICON_MATRIX_CMDS[icon];
           sendMatrix(matrix);
+          break;
+        // Scroll
+        case 0:
+        default:
+          const text = icon.split("").map((c, i) => {
+            if (c === "-") return 32;
+            return icon.charCodeAt(i);
+          });
+          sendText(text);
           break;
       }
     }
@@ -188,7 +197,11 @@ window.addEventListener("load", () => {
 
   function sendText(text) {
     if (!curState.ledTextChar) return;
-    //TODO
+
+    const cmd = new Uint8Array(text);
+    curState.ledTextChar
+      .writeValue(cmd)
+      .then(() => console.log(`Sent text: ${text}`));
   }
 
   function sendMatrix(matrix) {

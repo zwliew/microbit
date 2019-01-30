@@ -49,8 +49,20 @@ window.addEventListener("load", () => {
       BIT0 | BIT1 | BIT2 | BIT3 | BIT4,
       0
     ],
-    "partly-cloudy-day": [],
-    "partly-cloudy-night": []
+    "partly-cloudy-day": [
+      BIT1 | BIT4,
+      BIT3,
+      BIT1,
+      BIT0 | BIT1 | BIT2 | BIT4,
+      BIT0 | BIT1 | BIT2 | BIT3
+    ],
+    "partly-cloudy-night": [
+      BIT2 | BIT3,
+      BIT3 | BIT4,
+      BIT2 | BIT3,
+      BIT0 | BIT1,
+      BIT0 | BIT1 | BIT2
+    ]
   };
   const TENS_MATRIX_CMDS = [
     [0, 0, 0, 0, 0],
@@ -87,6 +99,7 @@ window.addEventListener("load", () => {
   const latitudeText = document.getElementById("latitude-text");
   const longitudeText = document.getElementById("longitude-text");
   const temperatureText = document.getElementById("temperature-text");
+  const iconText = document.getElementById("icon-text");
   const humidityText = document.getElementById("humidity-text");
   const dewPointText = document.getElementById("dew-point-text");
   const pressureText = document.getElementById("pressure-text");
@@ -141,6 +154,7 @@ window.addEventListener("load", () => {
         icon
       } = curState.weather;
       temperatureText.textContent = `Temperature: ${temperature}°C`;
+      iconText.textContent = `Icon: ${icon}`;
       humidityText.textContent = `Humidity: ${humidity * 100}%`;
       dewPointText.textContent = `Dew point: ${dewPoint}°C`;
       pressureText.textContent = `Pressure ${pressure} hPa`;

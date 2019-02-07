@@ -185,10 +185,13 @@ window.addEventListener("load", () => {
         // Scroll
         case 0:
         default:
-          const text = icon.split("").map((c, i) => {
-            if (c === "-") return 32;
-            return icon.charCodeAt(i);
-          });
+          const text = icon
+            .replace(/-\w/, c => c.toUpperCase())
+            .split("")
+            .map((c, i) => {
+              if (c === "-") return 32;
+              return icon.charCodeAt(i);
+            });
           sendText(text);
           break;
       }
